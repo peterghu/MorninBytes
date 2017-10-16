@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<WebsitesConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebsitesList>
+    <Websites ID="5">
+      <Url>http://reuters.com</Url>
+      <LastProcessed>2017-10-15T18:59:18.8342617-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>false</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://www.redflagdeals.com</Url>
+      <LastProcessed>2017-10-15T18:59:57.4798406-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://youtube.com</Url>
+      <LastProcessed>2017-10-15T18:59:24.8765486-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>false</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://www.mcdonalds.com</Url>
+      <LastProcessed>2017-10-15T19:00:00.5117535-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+  </WebsitesList>
+</WebsitesConfig>

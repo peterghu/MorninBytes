@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<WebsitesConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebsitesList>
+    <Websites ID="5">
+      <Url>http://google.com</Url>
+      <LastProcessed>1999-11-11T12:50:50</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://montesquie.com</Url>
+      <LastProcessed>1999-11-11T12:50:50</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://reuters.com</Url>
+      <LastProcessed>1999-11-11T12:50:50</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://pancakes.net</Url>
+      <LastProcessed>1999-11-11T12:50:50</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+  </WebsitesList>
+</WebsitesConfig>

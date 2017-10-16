@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<WebsitesConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebsitesList>
+    <Websites ID="5">
+      <Url>http://google.com</Url>
+      <LastProcessed>2017-10-15T18:06:29.480673-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://cnn.com</Url>
+      <LastProcessed>2017-10-15T18:06:32.5069759-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://reuters.com</Url>
+      <LastProcessed>2017-10-15T18:06:35.5325659-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="5">
+      <Url>http://redflagdeals.com</Url>
+      <LastProcessed>2017-10-15T18:06:38.5570116-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>true</IsEnabled>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+  </WebsitesList>
+</WebsitesConfig>
