@@ -16,11 +16,20 @@ using Microsoft.Win32;
 using MorninBytes.Views;
 using MorninBytes.Models;
 using MorninBytes.ViewModels;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 /* TODO
  * 
- check for duplicate websites
+ * 
+ * 
+ add auto-update XML feature 
+ offset for Adorner is off by 160 px... same as the height of the form
+ add ability to click out or ESC out of url field
+ add a params box
+
  add settings to remove overwrite prompt
+
  */
 
 namespace MorninBytes.ViewModels
@@ -29,18 +38,17 @@ namespace MorninBytes.ViewModels
     {
         public const string DefaultUserSettingsFilename = "settings.xml";
 
-        private string _newSite;
+        private string _newDest;
         private int _siteDelay = 10;
         private float _webSiteProgressBar = 0;
         private string _configFilePath = "";
         private string _configFilePathText = "";
         private string _lblAddWebsiteStatus;
         private string _lblConfigPathStatus;
-        private WebsitesList _myWebsiteList = new WebsitesList();
         private string _lblManagerStatus;
+        private WebsitesList _myWebsiteList = new WebsitesList();
 
         public IAsyncCommand OpenWebsitesCommand { get; private set; }
-
 
         public WebsiteUIViewModel()
         {
@@ -56,7 +64,6 @@ namespace MorninBytes.ViewModels
 
             if (ConfigFilePath.Contains("xml"))
                 DeserializeSettings();
-
         }
 
         public async Task<int> OpenWebsitesAsync(
@@ -68,21 +75,35 @@ namespace MorninBytes.ViewModels
             string url = "http://www.google.com";
             float websiteCount = websitesList.Count;
 
-            for (int i = 0; i < websitesList.Count; i++)
-            {
+            for (int i = 0; i < websitesList.Count; i++) {
                 Websites web = websitesList.ElementAt(i);
 
-                if (web.IsEnabled)
-                {
-                    System.Diagnostics.Process.Start(web.Url);
-                    UpdateProgress(i, websiteCount);
-                    LblManagerStatus = "Opened website: " + web.Url;
-                    web.LastProcessed = DateTime.Now;
+                if (web.IsEnabled) {
+                    if (web.Type == "")
+                        ValidatePathType(ref web);
+
+                    try
+                    {
+                        if (web.Type == DestinationTypes.URI)
+                            System.Diagnostics.Process.Start(web.Url);
+                        //else if (web.Type == DestinationTypes.FileSystem)
+                        else
+                            System.Diagnostics.Process.Start(web.Url);
+
+                        UpdateProgress(i, websiteCount);
+                        LblManagerStatus = "Opened path: " + web.Url;
+                        web.LastProcessed = DateTime.Now;
+                    }
+                    catch (Win32Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        LblManagerStatus = "Failed to open: " + web.Url;
+                    }
+                    
                     Thread.Sleep(delay);
                 }
 
-                if (token.IsCancellationRequested)
-                {
+                if (token.IsCancellationRequested) {
                     token.ThrowIfCancellationRequested();
                 }
             }
@@ -90,8 +111,7 @@ namespace MorninBytes.ViewModels
             WebSiteProgressBar = 0;
 
             var client = new HttpClient();
-            using (var response = await client.GetAsync(url, token).ConfigureAwait(false))
-            {
+            using (var response = await client.GetAsync(url, token).ConfigureAwait(false)) {
                 var data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 return data.Length;
             }
@@ -108,14 +128,15 @@ namespace MorninBytes.ViewModels
             }
         }
 
+        public bool OpenConfigBtnSts { get;set;}
 
-        public string NewSite
+        public string NewDest
         {
-            get { return _newSite; }
+            get { return _newDest; }
             set
             {
-                _newSite = value;
-                RaisePropertyChangedEvent("NewSite");
+                _newDest = value;
+                RaisePropertyChangedEvent("NewDest");
             }
         }
 
@@ -188,9 +209,7 @@ namespace MorninBytes.ViewModels
         {
             get { return new DelegateCommand<object>(ProcessUri); }
         }
-
-
-
+        
         public ICommand SaveMySettingsCmd
         {
             get { return new DelegateCommand<object>(SerializeSettings); }
@@ -226,26 +245,19 @@ namespace MorninBytes.ViewModels
             get { return new DelegateCommand<object>(ExitWindow); }
         }
 
-
         /* Delegate Commands */
         private void OpenConfigFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
 
-
             if (ConfigFilePathText.Contains("\\"))
-            {
                 openFileDialog.InitialDirectory = ConfigFilePathText.Remove(ConfigFilePathText.LastIndexOf("\\"));
-            }
             else
                 openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-
             if (openFileDialog.ShowDialog() == true)
-            {
                 ConfigFilePathText = openFileDialog.FileName;
-            }
         }
 
         private void UpdateConfigFileText(object parameter)
@@ -261,7 +273,7 @@ namespace MorninBytes.ViewModels
             bool proceed = true;
 
             Type[] myTypes = { typeof(Websites) };
-            
+
             try
             {
                 if (File.Exists(dest))
@@ -321,8 +333,7 @@ namespace MorninBytes.ViewModels
 
         private void DeserializeSettings()
         {
-            //TODO: disable load config button until this is completed
-
+            OpenConfigBtnSts = false;
             Type[] myTypes = { typeof(Websites) };
 
             try
@@ -335,8 +346,6 @@ namespace MorninBytes.ViewModels
                 LblConfigPathStatus = "";
                 ConfigFilePath = ConfigFilePathText;
                 UpdateManagerStatus(String.Format("Successfully loaded file \"{0}\"", ConfigFilePathText.Substring(ConfigFilePathText.LastIndexOf("\\") + 1)));
-                //serializer.Serialize(Console.Out, _myWebsiteList);
-                //Console.ReadLine();
             }
             catch (Exception ex)
             {
@@ -345,6 +354,7 @@ namespace MorninBytes.ViewModels
                 //LblConfigPathStatus = "Error: Invalid file specified";
             }
 
+            OpenConfigBtnSts = true;
         }
 
         public void UrlListClick()
@@ -365,50 +375,129 @@ namespace MorninBytes.ViewModels
 
         private void ProcessUri()
         {
-            var tempSite = NewSite;
-
-            if (!NewSite.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-                tempSite = "http://" + NewSite;
-
-            if (!IsValidUri(tempSite))
-                return;
-
-            AddToSiteList(tempSite);
-            NewSite = string.Empty;
-        }
-
-        public bool IsValidUri(string uri)
-        {
-            if (string.IsNullOrWhiteSpace(uri))
+            if (string.IsNullOrWhiteSpace(NewDest))
             {
                 LblAddWebsiteStatus = "Please enter a website!";
-                return false;
+                return;
             }
-            if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-            {
-                LblAddWebsiteStatus = "Invalid URI entered";
-                return false;
-            }
-            Uri tmp;
-            if (!Uri.TryCreate(uri, UriKind.Absolute, out tmp) || !(tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps))
-            {
-                LblAddWebsiteStatus = "Invalid URI protocol";
-                return false;
+            else if (_myWebsiteList.Contains(NewDest)) {
+                LblAddWebsiteStatus = "Destination already exists and is enabled!";
+                return;
             }
 
-            return true;
+            var tempDest = NewDest;
+            string result = "";
+            Websites x = new Websites(tempDest);
+           
+            if (ValidatePathType(ref x, ref result))
+            {
+                LblAddWebsiteStatus = "Successfully added: " + tempDest;
+                NewDest = string.Empty; //clear input box
+            }
+            else
+            {
+                LblAddWebsiteStatus = result;
+            }
+            
+            return;
         }
 
-        private void AddToSiteList(string item)
+        public bool ValidatePathType(ref Websites dest, ref string message)
         {
-            Websites x = new Websites(item, 5);
-            _myWebsiteList.AddWebsite(x);
-
-            /*
-            if (!_siteList.Contains(item))
+            if (ValidateAsUri(ref dest, ref message) || ValidateAsSystemPath(ref dest, ref message))
             {
-                _siteList.Add(item);
-            }*/
+                _myWebsiteList.AddWebsite(dest);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void ValidatePathType(ref Websites dest)
+        {
+            string message = "";
+            ValidateAsUri(ref dest, ref message);
+            ValidateAsSystemPath(ref dest, ref message);
+        }
+
+        public bool ValidateAsSystemPath(ref Websites dest, ref string message)
+        {
+            string path = dest.Url;
+
+            if (!File.Exists(path) && !Directory.Exists(path))
+            {
+                message = "Path does not exist!";
+            }
+            else
+            {
+                dest.Type = DestinationTypes.FileSystem;
+                return true;
+            }
+
+           return false;
+        }
+
+        public bool ValidateAsUri(ref Websites dest, ref string message)
+        {
+            Uri tmpUri;
+            string processedDest = dest.Url;
+
+            if (Regex.IsMatch(dest.Url, @"^[a-zA-Z]\:/[^/].*"))
+            {
+                message = "Filedirectory path detected";
+                return false;
+            }
+
+            if (!processedDest.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                processedDest = "http://" + processedDest;
+
+            if (!Uri.IsWellFormedUriString(processedDest, UriKind.Absolute))
+                message = "Invalid URI entered";
+            else if (!Uri.TryCreate(processedDest, UriKind.Absolute, out tmpUri)
+                     || (tmpUri.Scheme != Uri.UriSchemeHttp && tmpUri.Scheme != Uri.UriSchemeHttps))
+                message = "Invalid URI protocol";
+            //else if (tmpUri.AbsoluteUri.Split('.').Length < 2)
+            //    message = "No domain (.com, .net, etc) entered";
+          
+            if (message == "")
+            {
+                dest.Url = processedDest;
+                dest.Type = DestinationTypes.URI;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool IsValidUri(string inputUri)
+        {
+            Uri tmpUri;
+
+            if (!inputUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                inputUri = "http://" + inputUri;
+
+            else if (!Uri.IsWellFormedUriString(inputUri, UriKind.Absolute))
+                LblAddWebsiteStatus = "Invalid URI entered";
+            else if (!Uri.TryCreate(inputUri, UriKind.Absolute, out tmpUri) 
+                     || (tmpUri.Scheme != Uri.UriSchemeHttp && tmpUri.Scheme != Uri.UriSchemeHttps) )
+                LblAddWebsiteStatus = "Invalid URI protocol";
+            else if (tmpUri.AbsoluteUri.Split('.').Length < 2)
+                LblAddWebsiteStatus = "No domain (.com, .net, etc) entered";
+            else if (_myWebsiteList.Contains(inputUri))
+                LblAddWebsiteStatus = "Destination already exists and is enabled!";
+            else
+            {
+                LblAddWebsiteStatus = "";
+                return true;
+            }
+            return false;
+        }
+
+        private void AddToSiteList(string dest)
+        {
+            Websites x = new Websites(dest);
+            _myWebsiteList.AddWebsite(x);
+            System.Diagnostics.Process.Start("c:\\code\\");
         }
 
         private void UpdateProgress(int i, float size)
@@ -416,7 +505,7 @@ namespace MorninBytes.ViewModels
             float x = ((float)(i + 1) / size) * 100;
             WebSiteProgressBar = x;
         }
-        
+
         private void RemoveWebsite(object o)
         {
             Websites tmp = (Websites)o;

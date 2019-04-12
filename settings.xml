@@ -3,36 +3,55 @@
   <WebsitesList>
     <Websites ID="5">
       <Url>http://reuters.com</Url>
-      <LastProcessed>2017-10-15T18:59:18.8342617-06:00</LastProcessed>
+      <LastProcessed>2019-04-07T23:10:24.165455-06:00</LastProcessed>
       <TextHighLights>awaiting update</TextHighLights>
       <IsEnabled>false</IsEnabled>
+      <Type>URI</Type>
+      <PathEdit>www.google.com</PathEdit>
       <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
       <WebsiteEditFocus>false</WebsiteEditFocus>
       <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
     </Websites>
-    <Websites ID="5">
-      <Url>http://www.redflagdeals.com</Url>
-      <LastProcessed>2017-10-15T18:59:57.4798406-06:00</LastProcessed>
+    <Websites ID="4">
+      <Url>C:/sample_image.jpg</Url>
+      <LastProcessed>2019-04-07T23:10:32.9406333-06:00</LastProcessed>
       <TextHighLights>awaiting update</TextHighLights>
       <IsEnabled>true</IsEnabled>
+      <Type>File System</Type>
+      <PathEdit>C:/sample_image.jpg</PathEdit>
       <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
       <WebsiteEditFocus>false</WebsiteEditFocus>
       <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
     </Websites>
     <Websites ID="5">
       <Url>http://youtube.com</Url>
-      <LastProcessed>2017-10-15T18:59:24.8765486-06:00</LastProcessed>
+      <LastProcessed>2019-04-07T23:10:28.2465528-06:00</LastProcessed>
       <TextHighLights>awaiting update</TextHighLights>
       <IsEnabled>false</IsEnabled>
+      <Type>URI</Type>
+      <PathEdit>http://youtube.com</PathEdit>
       <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
       <WebsiteEditFocus>false</WebsiteEditFocus>
       <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
     </Websites>
     <Websites ID="5">
       <Url>http://www.mcdonalds.com</Url>
-      <LastProcessed>2017-10-15T19:00:00.5117535-06:00</LastProcessed>
+      <LastProcessed>2019-04-07T23:10:30.4282169-06:00</LastProcessed>
       <TextHighLights>awaiting update</TextHighLights>
       <IsEnabled>true</IsEnabled>
+      <Type>URI</Type>
+      <PathEdit>http://www.mcdonalds.com</PathEdit>
+      <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
+      <WebsiteEditFocus>false</WebsiteEditFocus>
+      <WebsiteTextDisplay>Visible</WebsiteTextDisplay>
+    </Websites>
+    <Websites ID="d8bd5874-483e-4029-9e4b-12324a703cb3">
+      <Url>http://frogs.com</Url>
+      <LastProcessed>2019-04-07T23:10:34.9779047-06:00</LastProcessed>
+      <TextHighLights>awaiting update</TextHighLights>
+      <IsEnabled>false</IsEnabled>
+      <Type>URI</Type>
+      <PathEdit>www.google.com</PathEdit>
       <WebsiteEditDisplay>Collapsed</WebsiteEditDisplay>
       <WebsiteEditFocus>false</WebsiteEditFocus>
       <WebsiteTextDisplay>Visible</WebsiteTextDisplay>

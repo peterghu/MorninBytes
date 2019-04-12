@@ -45,9 +45,29 @@ namespace MorninBytes.Models
 
         public bool DeleteWebsite(Websites website)
         {
-            bool ret = MyWebsites.Remove(website);
-            return ret;
+            return MyWebsites.Remove(website);
         }
 
+        public bool Contains(string dest)
+        {
+            if (MyWebsites.Any(p => p.Url == dest && p.IsEnabled))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool InsertAt(int index, Websites website)
+        {
+            try
+            {
+                MyWebsites.Insert(index, website);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

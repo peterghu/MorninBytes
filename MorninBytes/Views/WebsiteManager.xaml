@@ -7,13 +7,9 @@
              xmlns:Extensions="clr-namespace:MorninBytes.Extensions"
              xmlns:ViewModels="clr-namespace:MorninBytes.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance ViewModels:WebsiteUIViewModel}">
-
-    <UserControl.InputBindings>
-    </UserControl.InputBindings>
-
-    <StackPanel VerticalAlignment="Top" >
-
+             d:DataContext="{d:DesignInstance ViewModels:WebsiteUIViewModel}"
+>
+    <StackPanel VerticalAlignment="Top">
         <StackPanel Margin="8,10,10,0" Orientation="Horizontal" Height="36">
             <Label Margin="0,4,0,0">Config Path:</Label>
             <TextBox x:Name="TxtConfigFilePath" Text="{Binding ConfigFilePathText}" Height="23" Width="306" Margin="5,0,0,0" FontSize="12" FontStyle="Italic">
@@ -22,29 +18,36 @@
                 </TextBox.InputBindings>
             </TextBox>
             <Button Command="{Binding OpenConfigFileCmd}" Margin="10,1,5,0" Height="25" Width="37" Content="..." />
-            <Button x:Name="BtnLoadWebsites" Command="{Binding OpenMySettingsCmd}" Margin="5,1,0,0" Height="25" Width="90">Load Config</Button>
+            <Button x:Name="BtnLoadWebsites" Command="{Binding OpenMySettingsCmd}" Margin="5,1,0,0" Height="25" Width="90" IsEnabled="{Binding OpenConfigBtnSts}">Load Config</Button>
             <Button x:Name="BtnSaveWebsites" Command="{Binding SaveMySettingsCmd}" Margin="5,1,5,0" Height="25" Width="90">Save Config</Button>
         </StackPanel>
         <Label Foreground="Red" Content="{Binding LblConfigPathStatus}" FontSize="10" FontStyle="Italic" Margin="93,-5,0,-5" Height="28" HorizontalAlignment="Left"></Label>
 
 
         <StackPanel Orientation="Horizontal" Margin="37,0,0,0">
-            <Label Margin="5,0,2,0" Content="http://"/>
-            <TextBox Text="{Binding NewSite, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0" Width="210" Height="23">
+            <Label Margin="5,0,2,0" Content=""/>
+            <TextBox Text="{Binding NewDest, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0" Width="210" Height="23">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding AddWebsiteToList}"/>
                 </TextBox.InputBindings>
             </TextBox>
-            <Button Command="{Binding AddWebsiteToList}" Height="25" Width="110" Margin="10,0,140,0">Add new website</Button>
+            <Button Command="{Binding AddWebsiteToList}" Height="25" Width="130" Margin="10,0,140,0">Add new destination</Button>
         </StackPanel>
         <Label Foreground="Red" Content="{Binding LblAddWebsiteStatus}" FontSize="10" FontStyle="Italic" Margin="91,0,0,0" Height="28" HorizontalAlignment="Left"></Label>
 
         <!--<Label Foreground="Blue" Margin="5,5,5,0">History</Label>-->
-        <ListView ItemsSource="{Binding MyWebsiteList}" Name="ListWebsites" Height="200" Margin="10,5,16,5">
+        <!--<ListView ItemsSource="{Binding MyWebsiteList}" -->
+        <ListView ItemsSource="{Binding MyWebsiteList}"
+                  Name="ListWebsites" 
+                  Height="200" Margin="10,5,16,5"
+                  AllowDrop="true"
+                  DragEnter="ListViewDragEnter" Drop="ListViewDrop"
+                  PreviewMouseMove="ListViewPreviewMouseMove"
+                  PreviewMouseLeftButtonDown="ListViewPreviewMouseLeftButtonDown">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="160">
-                        <GridViewColumnHeader>Url
+                    <GridViewColumn Width="200">
+                        <GridViewColumnHeader HorizontalContentAlignment="Left">Url
                             <GridViewColumnHeader.ContextMenu>
                                 <ContextMenu Name="UrlCM">
                                     <MenuItem Header="Ascending" />
@@ -60,23 +63,26 @@
                                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding WebsiteEdit_DoubleClick}"></MouseBinding>
                                         </TextBlock.InputBindings>
                                     </TextBlock>
-
-                                    <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding WebsiteEditDisplay}" Extensions:FocusExtension.IsFocused="{Binding WebsiteEditFocus, Mode=TwoWay}">
+                                    <TextBox x:Name="TxtBoxPath" Text="{Binding PathEdit, UpdateSourceTrigger=PropertyChanged}" 
+                                             Visibility="{Binding WebsiteEditDisplay}" 
+                                             Extensions:FocusExtension.IsFocused="{Binding WebsiteEditFocus, Mode=TwoWay}" 
+                                             MinWidth="2" TextWrapping="NoWrap">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="LostFocus">
-                                                <i:InvokeCommandAction 
-                                                    Command="{Binding WebsiteEdit_LostFocus}"/>
+                                                <i:InvokeCommandAction Command="{Binding WebsiteEdit_LostFocus}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                         <TextBox.InputBindings>
-                                            <KeyBinding Key="Enter" Command="{Binding UpdateUrlCmd}"/>
+                                            <KeyBinding Key="Esc" Command="{Binding WebsiteEdit_ExitNoSave}"/>
+                                            <KeyBinding Key="Enter" Command="{Binding WebsiteEdit_ExitUpdate}"/>
                                         </TextBox.InputBindings>
                                     </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Enabled" Width="90">
+                    <GridViewColumn Width="70">
+                        <GridViewColumnHeader HorizontalContentAlignment="Center">Enabled</GridViewColumnHeader>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -88,15 +94,16 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Last Processed on" DisplayMemberBinding="{Binding LastProcessed}" Width="200"/>
-                    <GridViewColumn Header="Remove" Width="70">
+                    <GridViewColumn Header="Last Processed on" DisplayMemberBinding="{Binding LastProcessed}" Width="170"/>
+                    <GridViewColumn Width="70">
+                        <GridViewColumnHeader HorizontalContentAlignment="Center">Remove</GridViewColumnHeader>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="55" />
                                     </Grid.ColumnDefinitions>
-                                    <Button HorizontalAlignment="Center" Width="15"
+                                    <Button HorizontalAlignment="Center"
                                             Background="Transparent" BorderThickness="0"
                                             Foreground="Red" FontWeight="Bold"
                                             Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}},
@@ -106,6 +113,20 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn>
+                        <GridViewColumnHeader HorizontalContentAlignment="Center">Type</GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70"  />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Type}" Focusable="False" HorizontalAlignment="Center">
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn> 
                 </GridView>
             </ListView.View>
         </ListView>
@@ -113,10 +134,10 @@
             <Label Margin="5,0,2,0" Content="Delay (seconds)"/>
             <TextBox Text="{Binding SiteDelay, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" Margin="0,3,89,5" Width="30" Height="23"/>
         </StackPanel>
-        <Button x:Name="BtnOpenWebsites" Command="{Binding OpenWebsitesCommand}" HorizontalAlignment="Right" Margin="0,0,10,5" Height="25" Width="200">Load Websites</Button>
+        <Button x:Name="BtnOpenWebsites" Command="{Binding OpenWebsitesCommand}" HorizontalAlignment="Right" Margin="0,0,10,5" Height="25" Width="200">Load Paths!</Button>
         <Button x:Name="BtnCancelOpenWebsites" Command="{Binding OpenWebsitesCommand.CancelCommand}" HorizontalAlignment="Right" Margin="0,0,10,50" Height="25" Width="200">Cancel</Button>
 
-        <StatusBar Height="26px" VerticalAlignment="Bottom">
+        <StatusBar Height="26px" Background="White" Foreground="Black">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -131,7 +152,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem>
-                <TextBlock>MorninBytes</TextBlock>
+                <TextBlock Padding="3,0,0,0">MorninBytes</TextBlock>
             </StatusBarItem>
             <Separator Grid.Column="1"></Separator>
             <StatusBarItem Grid.Column="2">
@@ -139,7 +160,7 @@
             </StatusBarItem>
             <Separator Grid.Column="3" />
             <StatusBarItem Grid.Column="4">
-                <ProgressBar Value="{Binding WebSiteProgressBar}" Width="90" Height="16" />
+                <ProgressBar Value="{Binding WebSiteProgressBar}" Width="91" Height="16" />
             </StatusBarItem>
         </StatusBar>
 

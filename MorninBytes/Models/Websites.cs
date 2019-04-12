@@ -12,53 +12,46 @@ namespace MorninBytes.Models
     [XmlType("Websites")]
     public class Websites : ObservableObject
     {
+        public enum Types {URI, FileSystem};
+
         //private readonly Func<string, string> _temp;
         private bool _isEnabled = true;
-        private DateTime _lastProcessed;
+        private DateTime? _lastProcessed;
         private string _webSiteEditDisplay = "Collapsed";
         private string _webSiteTextDisplay = "Visible";
         private bool _webSiteEditFocus = false;
         private string _url = "";
+        private string _type = "";
+        private string _pathEdit = "";
 
+        /* Default constructor */
         public Websites()
         {
-            this.ID = 421415;
+            this.ID = "421415";
             this.Url = "www.google.com";
+            this.PathEdit = this.Url;
             this.TextHighLights = "awaiting update";
             this.LastProcessed = new DateTime(1999, 11, 11, 12, 50, 50);
             this.IsEnabled = true;
         }
 
-
-
-        /*
-        public WebsiteVisit(Func<string, string> convertion)
+        public Websites(string url)
         {
-            _temp = convertion;
-        }
-        */
-
-        public Websites(string url, int id)
-        {
-            this.ID = id;
+            this.ID = Guid.NewGuid().ToString();
             this.Url = url;
             this.TextHighLights = "awaiting update";
-            this.LastProcessed = new DateTime(1999, 11, 11, 12, 50, 50);
+            this.LastProcessed = null;
             this.IsEnabled = true;
         }
-
-        //public string ConvertText(string inputText)
-        // {
-        //     return _temp(inputText);
-        // }
         
-        [XmlAttribute("ID", DataType = "int")]
+        [XmlAttribute("ID", DataType = "string")]
         //[XmlElement("ID")]
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         //[XmlAttribute("Url", DataType = "string")]
         [XmlElement("Url")]
-        public string Url { get { return this._url; }
+        public string Url {
+            get { return this._url; }
             set {
                 this._url = value;
                 RaisePropertyChangedEvent("Url");
@@ -66,7 +59,7 @@ namespace MorninBytes.Models
         }
 
         [XmlElement("LastProcessed")]
-        public DateTime LastProcessed {
+        public DateTime? LastProcessed {
             get { return _lastProcessed; }
             set
             {
@@ -88,46 +81,71 @@ namespace MorninBytes.Models
             }
         }
 
+        [XmlElement("Type")]
+        public string Type
+        {
+            get { return this._type; }
+            set
+            {
+                this._type = value;
+                RaisePropertyChangedEvent("Type");
+            }
+        }
+
+        public string PathEdit
+        {
+            get { return this._pathEdit; }
+            set
+            {
+                this._pathEdit = value;
+                RaisePropertyChangedEvent("PathEdit");
+            }
+        }
+
         public ICommand WebsiteEdit_DoubleClick
         {
-            get { return new DelegateCommand<object>(WebsiteEdit); }
+            get { return new DelegateCommand<object>(ShowWebsiteEdit); }
         }
 
         public ICommand WebsiteEdit_LostFocus
         {
             get { return new DelegateCommand<object>(WebsiteCloseEdit); }
         }
+        public ICommand WebsiteEdit_ExitNoSave
+        {
+            get { return new DelegateCommand<object>(WebsiteCloseEdit); }
+        }
 
-        public ICommand UpdateUrlCmd
+
+        public ICommand WebsiteEdit_ExitUpdate
         {
             get { return new DelegateCommand<object>(UpdateUrl); }
         }
 
         private void UpdateUrl()
         {
-            var temp = this.Url;
-            
+            //var temp = this.Url;
+            Url = PathEdit.Trim();
             //validate URL again
-
-
+            
             //remove focus from the textbox
             WebsiteCloseEdit();
         }
 
-        private void WebsiteEdit()
+        private void ShowWebsiteEdit()
         {
+            
+            PathEdit = Url;
             WebsiteEditDisplay = "Visible";
             WebsiteTextDisplay = "Collapsed";
             WebsiteEditFocus = true;
         }
 
-
         private void WebsiteCloseEdit()
         {
-            WebsiteTextDisplay = "Visible";
             WebsiteEditDisplay = "Collapsed";
+            WebsiteTextDisplay = "Visible";
             WebsiteEditFocus = false;
-
         }
 
         public string WebsiteEditDisplay
