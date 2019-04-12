@@ -1,7 +1,7 @@
 # MorninBytes
 _Making your morning more efficient_
 
-<img src="https://github.com/peterghu/MorninBytes/blob/master/screenshot1.png" alt="Website Manager UI" width="300">
+<img src="https://github.com/peterghu/MorninBytes/blob/master/screenshot_UI.png" alt="Website Manager UI" width="300">
 
 Initial version of MorninBytes with website management features. This program was made with WPF, and C# in Visual Studio 2017. In the future, this program will have full features to make your morning internet routine smooth and efficient, in a few clicks.
 
